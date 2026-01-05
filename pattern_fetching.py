@@ -74,7 +74,7 @@ def flag(data):
 
 def index():
   all_results = []
-  symbol_name_csv = pd.read_csv('EQUITY_L_LL.csv')
+  symbol_name_csv = pd.read_csv('csv_files/EQUITY_L_LL.csv')
   nse_stock = [symbol + '.NS' for symbol in symbol_name_csv['Symbol']]
   for ticker in nse_stock:
     data = yf.download(ticker, period='150d', interval='1d', progress=False) #1
