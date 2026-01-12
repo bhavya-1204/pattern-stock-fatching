@@ -43,6 +43,13 @@ def flag(data):
 
     price_diff = round((pole_high - pole_low),2) #1
     pole_618 = round(pole_high - (price_diff*0.618),2) #1
+
+    last_close = float(data['Close'].iloc[-1].item())
+    prev_close = float(data['Close'].iloc[-2].item())
+
+    if prev_close > last_close:
+      continue
+
     if pole_i+7 >= len(data):
       continue
     else:
@@ -82,7 +89,7 @@ def index():
     if not data.empty and round(data['Close'].iloc[-1].item(),2) >= 100 and data['Volume'].iloc[-1].item() > 150000:
       data['09_ema'] = calculate_ema(data,9)
       data['20_ema'] = calculate_ema(data,20)
-      data = data.tail(15).round(2)
+      data = data.tail(10).round(2)
       flagi = flag(data)
       df = pd.DataFrame(flagi)
 

@@ -107,6 +107,8 @@ def check_close_of_ema(data):
 
     main_low = float(data['Low'].iloc[final_result].item())
     main_high = float(data['High'].iloc[final_result].item())
+    price_diff = round((main_high - main_low),2) #1
+    pole_382 = round(main_high - (price_diff*0.382),2) #1
 
     for i in range(final_result + 1, len(data)):
         ema20 = ema_20_series.iloc[i].item()
@@ -116,7 +118,7 @@ def check_close_of_ema(data):
         if pd.isna(ema20) or pd.isna(ema9) or pd.isna(close):
             continue
 
-        if close < main_low or close < ema20 or close > main_high:
+        if close < main_low or close < ema20 or close > main_high or close < pole_382:
             return result
 
     if last_close > ema_20 and last_close > ema_9:
@@ -160,4 +162,3 @@ def index():
 
 if __name__ == "__main__":
     stock = index()
-    # print(result)
