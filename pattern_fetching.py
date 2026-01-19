@@ -89,7 +89,7 @@ def index():
     if not data.empty and round(data['Close'].iloc[-1].item(),2) >= 100 and data['Volume'].iloc[-1].item() > 150000:
       data['09_ema'] = calculate_ema(data,9)
       data['20_ema'] = calculate_ema(data,20)
-      data = data.tail(10).round(2)
+      data = data.tail(20).round(2)
       flagi = flag(data)
       df = pd.DataFrame(flagi)
 
