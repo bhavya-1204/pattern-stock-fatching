@@ -11,6 +11,8 @@ Original file is located at
 import pandas as pd
 import yfinance as yf
 import warnings
+import requests
+from io import StringIO
 
 # Suppress warnings
 warnings.filterwarnings('ignore')
@@ -81,7 +83,21 @@ def flag(data):
 
 def index():
   all_results = []
-  symbol_name_csv = pd.read_csv('csv_files/EQUITY_L_LL.csv')
+  # symbol_name_csv = pd.read_csv('csv_files/EQUITY_L_LL.csv')
+  session = requests.Session()
+
+  headers = {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "Accept-Language": "en-US,en;q=0.9",
+      "Referer": "https://www.nseindia.com/"
+  }
+
+  session.get("https://www.nseindia.com", headers=headers)  # First hit homepage
+  response = session.get(
+      "https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv",
+      headers=headers
+  )
+  symbol_name_csv = pd.read_csv(StringIO(response.text))
   nse_stock = [symbol + '.NS' for symbol in symbol_name_csv['SYMBOL']]
   for ticker in nse_stock:
     data = yf.download(ticker, period='150d', interval='1d', progress=False) #1

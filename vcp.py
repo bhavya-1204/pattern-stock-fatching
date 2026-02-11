@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 import warnings
+import requests
+from io import StringIO
 
 # Suppress warnings
 warnings.filterwarnings('ignore')
@@ -114,7 +116,21 @@ def vcp(data):
 
 def index():
   result = []
-  symbol_name_csv = pd.read_csv('csv_files/EQUITY_L_LL.csv')
+  # symbol_name_csv = pd.read_csv('csv_files/EQUITY_L_LL.csv')
+  session = requests.Session()
+
+  headers = {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "Accept-Language": "en-US,en;q=0.9",
+      "Referer": "https://www.nseindia.com/"
+  }
+
+  session.get("https://www.nseindia.com", headers=headers)  # First hit homepage
+  response = session.get(
+      "https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv",
+      headers=headers
+  )
+  symbol_name_csv = pd.read_csv(StringIO(response.text))
   nse_stock = [symbol + '.NS' for symbol in symbol_name_csv['SYMBOL']]
 
   for ticker in nse_stock:
@@ -130,7 +146,7 @@ def index():
             'End date' : end_date,
             'Price' : data['Close'].iloc[-1].item()
         })
-  return result
+  return pd.DataFrame(result)
 
 if __name__ == "__main__":
   stock = index()
