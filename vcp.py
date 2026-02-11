@@ -19,7 +19,7 @@ def calculate_ema(df, period):
 def vcp(data):
   ema_result = calculate_ema(data, 9)
   if ema_result is None:
-    return False
+    return False, None, None
   data['09_ema'] = ema_result.round(2)
 
   # Low main
@@ -51,17 +51,17 @@ def vcp(data):
   high_2_09 = data['09_ema'].loc[high_2_idx].item()
 
   if high_2_close < high_2_09:
-    return False
+    return False, None, None
 
   if high_2 > high_1:
-    return False
+    return False, None, None
 
   data_4 = data.loc[high_2_idx:]
 
   # Low 2
   low_2 = data_4['Low'].min().item()
   if low_2 < low_1:
-    return False
+    return False, None, None
 
   low_2_idx = data_4[np.isclose(data_4['Low'], low_2)].index[0]
   index_number_4 = data.index.get_loc(low_2_idx)
@@ -78,13 +78,13 @@ def vcp(data):
   high_3_09 = data['09_ema'].loc[high_3_idx].item()
 
   if high_3_close < high_3_09:
-    return False
+    return False, None, None
 
   if high_3 > high_2:
-    return False
+    return False, None, None
 
   if index_number == index_number_1 or index_number_1 == index_number_2 or index_number_2 == index_number_3 or index_number_3 == index_number_4 or index_number_4 == index_number_5:
-    return False
+    return False, None, None
 
   distance_1 = (index_number_1 - index_number)
   distance_2 = (index_number_2 - index_number_1)
@@ -108,7 +108,7 @@ def vcp(data):
   distances = [distance_1, distance_2, distance_3, distance_4, distance_5]
 
   if not all(3 <= d <= 20 for d in distances):
-    return False
+    return False, None, None
 
   return True, low_idx.date(), high_3_idx.date()
 
