@@ -135,7 +135,7 @@ def index():
     all_results = []
 
     symbol_name_csv = pd.read_csv('csv_files/F&O.csv')
-    nse_stock = [symbol + '.NS' for symbol in symbol_name_csv['Symbol']]
+    nse_stock = [symbol + '.NS' for symbol in symbol_name_csv['SYMBOL']]
 
     for ticker in nse_stock:
         data = yf.download(

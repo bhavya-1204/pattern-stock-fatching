@@ -1,0 +1,138 @@
+import pandas as pd
+import numpy as np
+import yfinance as yf
+import warnings
+
+# Suppress warnings
+warnings.filterwarnings('ignore')
+pd.options.mode.chained_assignment = None
+
+def calculate_ema(df, period):
+    """
+    Calculate Exponential Moving Average (EMA) for a given period.
+    Returns None if insufficient data.
+    """
+    if len(df) < period:
+        return None
+    return df['Close'].ewm(span=period, adjust=False).mean()
+
+def vcp(data):
+  ema_result = calculate_ema(data, 9)
+  if ema_result is None:
+    return False
+  data['09_ema'] = ema_result.round(2)
+
+  # Low main
+  low = data['Low'].min().item()
+  low_idx = data[np.isclose(data['Low'], low)].index[0]
+  index_number = data.index.get_loc(low_idx)
+  data_1 = data.loc[low_idx:]
+
+  # Peak 1
+  high_1 = data_1['High'].max().item()
+  high_1_idx = data_1[np.isclose(data_1['High'], high_1)].index[0]
+  index_number_1 = data.index.get_loc(high_1_idx)
+
+  # print(data['09_ema'].iloc[index_number].item())
+  data_2 = data_1.loc[high_1_idx:]
+
+  # Low 1
+  low_1 = data_2['Low'].min().item()
+  low_1_idx = data_2[np.isclose(data_2['Low'], low_1)].index[0]
+  index_number_2 = data.index.get_loc(low_1_idx)
+  data_3 = data_2.loc[low_1_idx:]
+
+  # Peak 2
+  high_2 = data_3['High'].max().item()
+  high_2_idx = data_3[np.isclose(data_3['High'], high_2)].index[0]
+  index_number_3 = data.index.get_loc(high_2_idx)
+
+  high_2_close = data_3.loc[high_2_idx, 'Close'].item()
+  high_2_09 = data['09_ema'].loc[high_2_idx].item()
+
+  if high_2_close < high_2_09:
+    return False
+
+  if high_2 > high_1:
+    return False
+
+  data_4 = data.loc[high_2_idx:]
+
+  # Low 2
+  low_2 = data_4['Low'].min().item()
+  if low_2 < low_1:
+    return False
+
+  low_2_idx = data_4[np.isclose(data_4['Low'], low_2)].index[0]
+  index_number_4 = data.index.get_loc(low_2_idx)
+
+  data_5 = data.loc[low_2_idx:]
+
+  # Peak 3
+  high_3 = data_5['High'].max().item()
+  # Fixed: Use data_4 for the boolean mask to avoid length mismatch error
+  high_3_idx = data_5[np.isclose(data_5['High'], high_3)].index[0]
+  index_number_5 = data.index.get_loc(high_3_idx)
+
+  high_3_close = data_5.loc[high_3_idx, 'Close'].item()
+  high_3_09 = data['09_ema'].loc[high_3_idx].item()
+
+  if high_3_close < high_3_09:
+    return False
+
+  if high_3 > high_2:
+    return False
+
+  if index_number == index_number_1 or index_number_1 == index_number_2 or index_number_2 == index_number_3 or index_number_3 == index_number_4 or index_number_4 == index_number_5:
+    return False
+
+  distance_1 = (index_number_1 - index_number)
+  distance_2 = (index_number_2 - index_number_1)
+  distance_3 = (index_number_3 - index_number_2)
+  distance_4 = (index_number_4 - index_number_3)
+  distance_5 = (index_number_5 - index_number_4)
+
+  # print(low_idx.date())
+  # print(high_1_idx.date())
+  # print(low_1_idx.date())
+  # print(high_2_idx.date())
+  # print(low_2_idx.date())
+  # print(high_3_idx.date())
+
+  # print(distance_1)
+  # print(distance_2)
+  # print(distance_3)
+  # print(distance_4)
+  # print(distance_5)
+
+  distances = [distance_1, distance_2, distance_3, distance_4, distance_5]
+
+  if not all(3 <= d <= 20 for d in distances):
+    return False
+
+  return True, low_idx.date(), high_3_idx.date()
+
+def index():
+  result = []
+  symbol_name_csv = pd.read_csv('csv_files/EQUITY_L_LL.csv')
+  nse_stock = [symbol + '.NS' for symbol in symbol_name_csv['SYMBOL']]
+
+  for ticker in nse_stock:
+    data = yf.download(ticker, period='70d', interval='1d', progress=False).round(2)
+
+    if not data.empty and round(data['Close'].iloc[-1].item(),2) >= 100 and data['Volume'].iloc[-1].item() > 150000:
+      check_vcp, start_date, end_date = vcp(data)
+
+      if check_vcp:
+        result.append({
+            'Stock name' : ticker,
+            'Start date' : start_date,
+            'End date' : end_date,
+            'Price' : data['Close'].iloc[-1].item()
+        })
+  return result
+
+if __name__ == "__main__":
+  stock = index()
+  # stock_df = pd.DataFrame(stock, columns=['Stock Name'])
+  # print(stock_df)

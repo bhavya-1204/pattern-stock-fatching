@@ -4,7 +4,7 @@ import streamlit as st
 st.set_page_config(
     page_title="Stock Selection Dashboard",
     page_icon="📈",
-    layout="centered"
+    layout="wide"   # changed to wide for better 3-column layout
 )
 
 # ---------- Custom CSS ----------
@@ -24,7 +24,7 @@ st.markdown("""
 .card {
     background: #ffffff;
     border-radius: 16px;
-    padding: 25px;
+    padding: 30px;
     text-align: center;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     transition: transform 0.2s ease-in-out;
@@ -48,9 +48,10 @@ st.markdown("""
 st.markdown('<div class="main-title">📈 STOCK SELECTION DASHBOARD</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-title">Technical pattern & F&O stock screening</div>', unsafe_allow_html=True)
 
-# ---------- Cards ----------
-col1, col2 = st.columns(2, gap="large")
+# ---------- 3 Column Layout ----------
+col1, col2, col3 = st.columns(3, gap="large")
 
+# ---------- Pattern Scanner ----------
 with col1:
     st.markdown("""
     <div class="card">
@@ -67,6 +68,7 @@ with col1:
         icon="➡️"
     )
 
+# ---------- F&O Scanner ----------
 with col2:
     st.markdown("""
     <div class="card">
@@ -80,6 +82,23 @@ with col2:
     st.page_link(
         "pages/app_future.py",
         label="Open F&O Scanner",
+        icon="➡️"
+    )
+
+# ---------- VCP Scanner ----------
+with col3:
+    st.markdown("""
+    <div class="card">
+        <div class="card-title">📈 VCP Scanner</div>
+        <div class="card-desc">
+            Detect Volatility Contraction Pattern (VCP) stocks using EMA & contraction logic.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.page_link(
+        "pages/vcp_result.py",
+        label="Open VCP Scanner",
         icon="➡️"
     )
 

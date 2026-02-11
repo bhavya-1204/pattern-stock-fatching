@@ -82,7 +82,7 @@ def flag(data):
 def index():
   all_results = []
   symbol_name_csv = pd.read_csv('csv_files/EQUITY_L_LL.csv')
-  nse_stock = [symbol + '.NS' for symbol in symbol_name_csv['Symbol']]
+  nse_stock = [symbol + '.NS' for symbol in symbol_name_csv['SYMBOL']]
   for ticker in nse_stock:
     data = yf.download(ticker, period='150d', interval='1d', progress=False) #1
     # Check if data is not empty and meets price condition
