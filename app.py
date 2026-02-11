@@ -46,7 +46,7 @@ st.markdown("""
 
 # ---------- Header ----------
 st.markdown('<div class="main-title">📈 STOCK SELECTION DASHBOARD</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">Technical pattern & F&O stock screening</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Rocket Base, F&O and VCP scanner</div>', unsafe_allow_html=True)
 
 # ---------- 3 Column Layout ----------
 col1, col2, col3 = st.columns(3, gap="large")
@@ -63,8 +63,8 @@ with col1:
     """, unsafe_allow_html=True)
 
     st.page_link(
-        "pages/pattern_app.py",
-        label="Open Pattern Scanner",
+        "pages/Rocket_base.py",
+        label="RB Scanner",
         icon="➡️"
     )
 
@@ -80,8 +80,8 @@ with col2:
     """, unsafe_allow_html=True)
 
     st.page_link(
-        "pages/app_future.py",
-        label="Open F&O Scanner",
+        "pages/future_option.py",
+        label="F&O Scanner",
         icon="➡️"
     )
 
@@ -98,10 +98,10 @@ with col3:
 
     st.page_link(
         "pages/vcp_result.py",
-        label="Open VCP Scanner",
+        label="VCP Scanner",
         icon="➡️"
     )
 
 # ---------- Footer ----------
 st.markdown("---")
-st.caption("🚀 Built with Streamlit | Market analysis dashboard")
+st.markdown('<div class="sub-title">Made by BHAVYA PATEL</div>', unsafe_allow_html=True)
