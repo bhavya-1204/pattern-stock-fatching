@@ -133,7 +133,7 @@ def index():
   nse_stock = [symbol + '.NS' for symbol in symbol_name_csv['SYMBOL']]
 
   for ticker in nse_stock:
-    data = yf.download(ticker, period='70d', interval='1d', progress=False).round(2)
+    data = yf.download(ticker, period='150d', interval='1d', progress=False).round(2)
 
     if not data.empty and round(data['Close'].iloc[-1].item(),2) >= 100 and data['Volume'].iloc[-1].item() > 150000:
       check_vcp, start_date, end_date = vcp(data)
