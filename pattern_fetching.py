@@ -49,9 +49,9 @@ def flag(data):
     last_close = round(data['Close'].iloc[-1].item(),2)
     prev_close = round(data['Close'].iloc[-2].item(),2)
 
-    close_diff = ((last_close - prev_close)*100/prev_close)
+    close_diff = ((last_close - prev_close)/prev_close)
 
-    if close_diff > 5 or close_diff < -5:
+    if close_diff > 0.05 or close_diff < -0.05:
       continue
 
     if pole_i+7 >= len(data):
