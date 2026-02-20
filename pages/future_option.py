@@ -28,7 +28,7 @@ try:
             last_update = pd.to_datetime(df["scan_time"].iloc[0])
             st.caption(f"🕒 Last scan: {last_update}")
     else:
-        st.warning("Scanner ran, but no patterns found.")
+        st.warning("Waiting for latest scan output…")
 
 except Exception:
-    st.error("Waiting for latest scan output…")
+    st.error("Scanner ran, but no patterns found.")

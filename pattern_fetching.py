@@ -46,10 +46,12 @@ def flag(data):
     price_diff = round((pole_high - pole_low),2) #1
     pole_618 = round(pole_high - (price_diff*0.618),2) #1
 
-    last_close = float(data['Close'].iloc[-1].item())
-    prev_close = float(data['Close'].iloc[-2].item())
+    last_close = round(data['Close'].iloc[-1].item(),2)
+    prev_close = round(data['Close'].iloc[-2].item(),2)
 
-    if prev_close > last_close:
+    close_diff = ((last_close - prev_close)*100/prev_close)
+
+    if close_diff > 5 or close_diff < -5:
       continue
 
     if pole_i+7 >= len(data):
@@ -83,7 +85,6 @@ def flag(data):
 
 def index():
   all_results = []
-  # symbol_name_csv = pd.read_csv('csv_files/EQUITY_L_LL.csv')
   session = requests.Session()
 
   headers = {

@@ -116,7 +116,6 @@ def vcp(data):
 
 def index():
   result = []
-  # symbol_name_csv = pd.read_csv('csv_files/EQUITY_L_LL.csv')
   session = requests.Session()
 
   headers = {

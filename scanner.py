@@ -16,11 +16,11 @@ else:
 
 if not vcp_type.empty:
     vcp_type.to_csv("output/vcp_output.csv", index=False)
-    print("Future & Option Scan completed")
+    print("VCP Scan completed")
 else:
     # still create file so Streamlit knows scan ran
     vcp_type.to_csv("output/vcp_output.csv", index=False)
-    print("No Future & Option patterns found")
+    print("No VCP pattern found")
 
 if not future_option.empty:
     future_option.to_csv("output/future_output.csv", index=False)
